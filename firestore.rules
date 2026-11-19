@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidKp4Doc(data) {
+      return data.keys().hasAll(['title', 'data', 'updatedAt'])
+        && data.title is string
+        && data.title.size() > 0
+        && data.title.size() <= 160
+        && data.data is map
+        && data.data.nama is string
+        && data.data.nip is string;
+    }
+
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      match /kp4_documents/{docId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidKp4Doc(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}

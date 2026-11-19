@@ -1,0 +1,6 @@
+{
+  "name": "Generator KP4",
+  "description": "Aplikasi penyusunan dan arsip Surat Keterangan Tunjangan Keluarga (KP4) dengan login pengguna dan penyimpanan Firebase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

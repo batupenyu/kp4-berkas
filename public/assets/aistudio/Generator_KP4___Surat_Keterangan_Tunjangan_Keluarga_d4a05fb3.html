@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Generator KP4 – Surat Keterangan Tunjangan Keluarga</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+:root{--bg:#f3f1ec;--card:#fff;--ink:#1d2433;--mut:#667085;--line:#d9d5cb;--acc:#14532d;--acc2:#fff;--bad:#a32;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--card:#1d222a;--ink:#e8eaee;--mut:#9aa3b2;--line:#323a46;--acc:#6ee7a0;--acc2:#0b1f13;--bad:#f08a7a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14171c;--card:#1d222a;--ink:#e8eaee;--mut:#9aa3b2;--line:#323a46;--acc:#6ee7a0;--acc2:#0b1f13;--bad:#f08a7a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--card);z-index:10}
+.bar h1{font:600 16px/1.2 Georgia,"Times New Roman",serif;margin:0 auto 0 0}
+.bar h1 small{display:block;font:400 12px system-ui,sans-serif;color:var(--mut)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px}
+button.p{background:var(--acc);color:var(--acc2);border-color:var(--acc);font-weight:600}
+button:disabled{opacity:.5;cursor:default}
+#msg{font-size:12px;color:var(--mut);flex-basis:100%}
+.main{display:grid;grid-template-columns:minmax(320px,430px) 1fr;gap:16px;padding:16px;align-items:start}
+@media(max-width:900px){.main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.card h2{font:600 13px system-ui;text-transform:uppercase;letter-spacing:.06em;color:var(--acc);margin:0 0 10px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g label.w{grid-column:1/-1}
+label{display:block;font-size:12px;color:var(--mut)}
+input{width:100%;margin-top2:2px;margin-top:2px;padding:7px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.row{border:1px dashed var(--line);border-radius:8px;padding:10px;margin-bottom:8px}
+.row .rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12px;color:var(--mut)}
+.row .rh button{padding:3px 9px;font-size:12px;color:var(--bad)}
+.pv{overflow-x:auto}
+#paperWrap{background:#fff;color:#000;padding:28px 36px;width:max-content;min-width:100%;box-shadow:0 2px 14px rgba(0,0,0,.18);border-radius:3px}
+#paper{width:680px;margin:0 auto;font:14px/1.35 "Times New Roman",Times,serif;color:#000}
+#paper p{margin:0 0 5px}
+#paper .c{text-align:center;font-weight:700;font-size:16px;margin:0}
+#paper .c+.c{margin-bottom:12px}
+#paper .b{font-weight:700;margin-top:8px}
+#paper .jp{text-align:justify}
+#paper.land table.sm{font-size:12px}
+#paper.land th,#paper.land td{padding:5px 6px}
+#paper.pdf{font-size:13px;line-height:1.3}
+#paper.pdf p{margin-bottom:4px}
+#paper.pdf table{font-size:10.5px;margin:4px 0 8px}
+#paper.pdf table.sm{font-size:9.5px}
+#paper.pdf.land table.sm{font-size:12px}
+#paper .li{display:grid;grid-template-columns:28px 1fr;text-align:justify;margin:0 0 3px}
+#paper .li.l1{padding-left:28px;grid-template-columns:40px 1fr}
+#paper .amt{display:grid;grid-template-columns:28px 330px 1fr;margin:0 0 3px}
+#paper .kv{display:grid;grid-template-columns:230px 16px 1fr}
+#paper table{width:100%;border-collapse:collapse;table-layout:fixed;margin:6px 0 10px;font-size:11.5px}
+#paper table.sm{font-size:9.5px}
+#paper th,#paper td{border:1px solid #000;padding:3px 4px;text-align:center;vertical-align:middle;word-wrap:break-word}
+#paper .sign{display:grid;grid-template-columns:1fr 1fr;margin-top:14px;text-align:center}
+#paper .sign b{font-weight:700;text-decoration:underline}
+#paper:not(.pdf) .pg2{border-top:2px dashed #999;margin-top:30px;padding-top:24px}
+@media print{
+ .noprint{display:none!important}body{background:#fff}.main{display:block;padding:0}.pv{overflow:visible}
+ #paperWrap{padding:0;box-shadow:none;width:auto}#paper{width:100%}
+ @page{size:A4 portrait;margin:12mm}
+ @page portrait{size:A4 portrait;margin:12mm}
+ @page landscape{size:A4 landscape;margin:12mm}
+ #paper .pg{page:portrait}
+ #paper .pg2{page:landscape;border:0;margin:0;padding:0;break-before:page;page-break-before:always}
+ #paper table{break-inside:auto;page-break-inside:auto}
+ #paper tr{break-inside:avoid;page-break-inside:avoid}
+ #paper thead{display:table-header-group}
+ #paper tbody{display:table-row-group}
+ .html2pdf__page-break{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bar noprint">
+  <h1>Generator KP4<small>Surat Keterangan untuk Mendapatkan Pembayaran Tunjangan Keluarga</small></h1>
+  <button id="bPrint">Cetak</button>
+  <button id="bPdf" class="p" disabled>Unduh PDF</button>
+  <button id="bDoc" class="p" disabled>Unduh Word</button>
+  <div id="msg"></div>
+</div>
+<div class="main">
+  <div id="form" class="noprint"></div>
+  <div class="pv"><div id="paperWrap"><div id="paper"></div></div></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const S={nama:'Maryani',nip:'197605072024212008',ttl:'Terentang III / 7 Mei 1976',jk:'Perempuan',agama:'Islam',kebangsaan:'Indonesia',gol:'IX / PPPK',jabatan:'Guru Pertama',instansi:'SMKN 1 KOBA',masa:'2 Tahun 8 bulan',gaji:'Perpres Nomor 11 Tahun 2024 (PPPK)',alamat:'Jln. Masjid Dalam RT 6 Kelurahan Berok Kecamatan Koba Kabupaten Bangka Tengah',kerja:'-',hasil:'-',pensiun:'-',jumlah:'',tempat:'Koba-Bangka Tengah',tanggal:'18 November 2026',jabK:'Kepala Sekolah',kepsek:'Syahryanto, ST.M.Pd',nipK:'197708262006041005',
+sp:[{nama:'Muslim',lahir:'20 Agustus 1979',kawin:'12 Desember 2004',kerja:'Petani',hasil:'3.000.000',ket:'-'}],
+a1:[{nama:'Humaira Yasmin',status:'Ak',lahir:'7 November 2005',kawin:'Belum',sekolah:'Universitas Bangka Belitung',beasiswa:'Tidak',ayah:'Muslim',ibu:'Maryani',cerai:'-',ket:'-'},
+{nama:'Mahira Hasna Kamila',status:'Ak',lahir:'8 Juli 2010',kawin:'Belum',sekolah:'SMA IT Sahabat Quran Bangka Tengah',beasiswa:'Tidak',ayah:'Muslim',ibu:'Maryani',cerai:'-',ket:'-'}],
+a2:[{nama:'Hana Khairunnisa',status:'Ak',lahir:'20 Desember 2013',kawin:'Belum',sekolah:'SMPN 1 Koba',beasiswa:'Tidak',bekerja:'Tidak Bekerja',ket:'-'}]};
+const DEF={sp:{nama:'',lahir:'',kawin:'',kerja:'',hasil:'',ket:'-'},
+a1:{nama:'',status:'Ak',lahir:'',kawin:'Belum',sekolah:'',beasiswa:'Tidak',ayah:S.sp[0].nama,ibu:S.nama,cerai:'-',ket:'-'},
+a2:{nama:'',status:'Ak',lahir:'',kawin:'Belum',sekolah:'',beasiswa:'Tidak',bekerja:'Tidak Bekerja',ket:'-'}};
+const P=[['nama','Nama Lengkap'],['nip','NIP'],['ttl','Tempat / Tanggal Lahir','w'],['jk','Jenis Kelamin'],['agama','Agama'],['kebangsaan','Kebangsaan'],['gol','Golongan / Status'],['jabatan','Jabatan'],['instansi','Instansi'],['masa','Masa Kerja Golongan'],['gaji','Digaji menurut','w'],['alamat','Alamat / Tempat Tinggal','w'],['kerja','Pekerjaan lain'],['hasil','Penghasilan lain (Rp)'],['pensiun','Pensiun / Pensiun Janda (Rp)','w'],['jumlah','Jumlah anak (kosong = otomatis)','w']];
+const T=[['tempat','Tempat'],['tanggal','Tanggal'],['jabK','Jabatan atasan'],['kepsek','Nama atasan'],['nipK','NIP atasan','w']];
+const LF={sp:[['nama','Nama'],['lahir','Tgl Lahir'],['kawin','Tgl Perkawinan'],['kerja','Pekerjaan'],['hasil','Penghasilan'],['ket','Ket.']],
+a1:[['nama','Nama'],['status','Status (Ak/At/Aa)'],['lahir','Tgl Lahir'],['kawin','Belum pernah kawin'],['sekolah','Sekolah / Kuliah pada'],['beasiswa','Beasiswa'],['ayah','Nama Ayah'],['ibu','Nama Ibu'],['cerai','Meninggal / Cerai'],['ket','Ket.']],
+a2:[['nama','Nama'],['status','Status (Ak/At/Aa)'],['lahir','Tgl Lahir'],['kawin','Belum pernah kawin'],['sekolah','Sekolah / Kuliah pada'],['beasiswa','Beasiswa'],['bekerja','Bekerja / Tidak'],['ket','Ket.']]};
+const LT={sp:['Suami / Istri','Pasangan'],a1:['Anak tanggungan masuk daftar gaji','Anak'],a2:['Anak tanggungan tidak masuk daftar gaji','Anak']};
+const fld=(k,l,v,w,x='')=>`<label class="${w||''}">${l}<input data-k="${k}" ${x} value="${esc(v)}"></label>`;
+function renderForm(){
+ let h=`<div class="card"><h2>Data pegawai</h2><div class="g">${P.map(f=>fld(f[0],f[1],S[f[0]],f[2])).join('')}</div></div>`;
+ for(const l of ['sp','a1','a2']){
+  h+=`<div class="card"><h2>${LT[l][0]}</h2>`+S[l].map((r,i)=>`<div class="row"><div class="rh"><span>${LT[l][1]} ${i+1}</span><button data-del="${l}" data-i="${i}">Hapus</button></div><div class="g">${LF[l].map(f=>`<label class="${f[0]=='nama'||f[0]=='sekolah'?'w':''}">${f[1]}<input data-l="${l}" data-i="${i}" data-k="${f[0]}" value="${esc(r[f[0]])}"></label>`).join('')}</div></div>`).join('')+`<button data-add="${l}">+ Tambah</button></div>`;
+ }
+ h+=`<div class="card"><h2>Tanda tangan</h2><div class="g">${T.map(f=>fld(f[0],f[1],S[f[0]],f[2])).join('')}</div></div>`;
+ $('form').innerHTML=h;
+}
+$('form').addEventListener('input',e=>{const t=e.target,k=t.dataset.k;if(!k)return;if(t.dataset.l)S[t.dataset.l][+t.dataset.i][k]=t.value;else S[k]=t.value;renderPreview();});
+$('form').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.add)S[b.dataset.add].push({...DEF[b.dataset.add]});else if(b.dataset.del)S[b.dataset.del].splice(+b.dataset.i,1);else return;
+ renderForm();renderPreview();});
+const d=v=>(v==null||String(v).trim()==='')?'-':v;
+function blocks(){const s=S,B=[];
+ const n=[...s.a1,...s.a2].filter(a=>a.nama&&a.nama.trim()&&a.nama.trim()!=='-').length;
+ B.push({t:'c',x:'SURAT KETERANGAN'},{t:'c',x:'UNTUK MENDAPATKAN PEMBAYARAN TUNJANGAN KELUARGA'});
+ [['1. Nama Lengkap',s.nama+' NIP. '+s.nip],['2. Tempat / Tanggal Lahir',s.ttl],['3. Jenis Kelamin',s.jk],['4. Agama',s.agama],['5. Kebangsaan',s.kebangsaan],['6. Golongan / Status Kepegawaian',s.gol],['7. Jabatan Struktural/Fungsional',s.jabatan],['8. Pada Instansi, Dept. Lembaga',s.instansi],['9. Masa Kerja Golongan',s.masa],['10. Digaji menurut',s.gaji],['Alamat / Tempat Tinggal',s.alamat]].forEach(r=>B.push({t:'kv',k:r[0],v:r[1]}));
+ B.push({t:'p',x:'Menerangkan dengan sesungguhnya bahwa saya :',b:1},
+ {t:'li',n:'1.',x:`Disamping Jabatan Utama tersebut, bekerja pula sebagai : ${d(s.kerja)}`},
+ {t:'amt',n:'',k:'dengan mendapat penghasilan sebesar',v:`Rp ${d(s.hasil)} sebulan`},
+ {t:'amt',n:'2.',k:'Mempunyai Pensiun / Pensiun Janda',v:`Rp ${d(s.pensiun)} sebulan`},
+ {t:'li',n:'3.',x:'Kawin sah dengan :'},
+ {t:'tbl',h:['No','Nama Istri / Suami','Tgl Lahir','Tgl Perkawinan','Pekerjaan','Penghasilan Sebulan','Keterangan'],w:[1,4,3,3,3,3,2],r:s.sp.map((r,i)=>[i+1,r.nama,r.lahir,r.kawin,r.kerja,r.hasil,r.ket].map(d))},
+ {t:'li',n:'1.',x:'Mempunyai anak – anak seperti dalam daftar sebelah ini, yaitu :'},
+ {t:'li',l:1,n:'I.',x:'Anak Kandung (Ak), Anak Tiri (At) yang masih menjadi tanggungan, belum mempunyai pekerjaan sendiri dan masuk dalam daftar gaji.'},
+ {t:'li',l:1,n:'II.',x:'Anak Kandung (Ak), Anak Tiri (At), Anak Angkat (Aa) yang masih menjadi tanggungan, tetapi tidak termasuk dalam daftar gaji.'},
+ {t:'li',n:'2.',x:`Jumlah anak seluruh ( ${s.jumlah||n} Orang ) yang menjadi tanggungan termasuk yang tidak termasuk dalam daftar gaji.`},
+ {t:'p',x:'Keterangan ini saya buat dengan sesungguhnya dan apabila keterangan ini ternyata tidak benar / palsu, saya bersedia dituntut dimuka Pengadilan berdasarkan undang-undang yang berlaku, dan bersedia mengembalikan semua uang tunjangan anak yang telah saya terima yang seharusnya bukan menjadi hak saya.'},
+ {t:'sign',l:['Mengetahui:',s.jabK,'','','',s.kepsek,'NIP. '+s.nipK],r:[s.tempat+', '+s.tanggal,'Yang Menerangkan,','','','',s.nama,'NIP. '+s.nip]},
+ {t:'pg'},
+ {t:'p',x:'I. Anak Kandung (Ak), Anak Tiri (At) dan Anak Angkat (Aa) yang masih menjadi tanggungan, belum mempunyai penghasilan sendiri dan masuk daftar gaji',b:1},
+ {t:'tbl',sm:1,h:['No','Nama','Status (Ak/At/Aa)','Tanggal Lahir','Belum Pernah Kawin','Bersekolah/ Kuliah pada','Tidak mendapat Beasiswa','Nama Ayah','Nama Ibu','Tgl Meninggal/ Diceraikan','Ket.'],w:[1,4,1.6,2.6,2,4,2,2.6,2.6,2.6,1.4],r:s.a1.map((r,i)=>[i+1,r.nama,r.status,r.lahir,r.kawin,r.sekolah,r.beasiswa,r.ayah,r.ibu,r.cerai,r.ket].map(d))},
+ {t:'p',x:'II. Anak Kandung (Ak), Anak Tiri (At) dan Anak Angkat (Aa) yang masih tanggungan, tetapi tidak masuk dalam daftar gaji',b:1},
+ {t:'tbl',sm:1,h:['No','Nama','Status (Ak/At/Aa)','Tanggal Lahir','Belum Pernah Kawin','Bersekolah/ Kuliah pada','Tidak mendapat Beasiswa','Bekerja / Tidak Bekerja','Ket.'],w:[1,4,1.6,2.6,2,4,2,2.4,1.4],r:s.a2.map((r,i)=>[i+1,r.nama,r.status,r.lahir,r.kawin,r.sekolah,r.beasiswa,r.bekerja,r.ket].map(d))},
+ {t:'p',x:'A. Supaya dilampirkan salinan Surat Keputusan Pengadilan Negeri yang disahkan.'},
+ {t:'p',x:'B. Supaya diisi jika anak dilahirkan dari istri/suami yang telah meninggal dunia atau diceraikan.'});
+ return B;}
+function toHtml(B){let o='<div class="pg">';
+ for(const b of B){
+  if(b.t=='pg')o+='</div><div class="html2pdf__page-break"></div><div class="pg pg2">';
+  else if(b.t=='c')o+=`<p class="c">${esc(b.x)}</p>`;
+  else if(b.t=='kv')o+=`<div class="kv"><span>${esc(b.k)}</span><span>:</span><span>${esc(b.v)}</span></div>`;
+  else if(b.t=='p')o+=`<p class="${b.b?'b':'jp'}">${esc(b.x)}</p>`;
+  else if(b.t=='li')o+=`<div class="li${b.l?' l1':''}"><span>${esc(b.n)}</span><span>${esc(b.x)}</span></div>`;
+  else if(b.t=='amt')o+=`<div class="amt"><span>${esc(b.n)}</span><span>${esc(b.k)}</span><span>${esc(b.v)}</span></div>`;
+  else if(b.t=='tbl'){const sm=b.w.reduce((a,c)=>a+c,0);
+   o+=`<table${b.sm?' class="sm"':''}><colgroup>${b.w.map(w=>`<col style="width:${(w/sm*100).toFixed(1)}%">`).join('')}</colgroup><thead><tr>${b.h.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${b.r.map(r=>'<tr>'+r.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('')}</tbody></table>`;}
+  else if(b.t=='sign'){const col=a=>'<div>'+a.map((x,i)=>`<div>${i==5?'<b>'+esc(x)+'</b>':esc(x)||'&nbsp;'}</div>`).join('')+'</div>';o+=`<div class="sign">${col(b.l)}${col(b.r)}</div>`;}
+ }return o+'</div>';}
+function renderPreview(){$('paper').innerHTML=toHtml(blocks());}
+
+/* ---- Word (.docx) ---- */
+const run=(t,o={})=>`<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>${o.b?'<w:b/>':''}${o.u?'<w:u w:val="single"/>':''}<w:sz w:val="${o.sz||22}"/></w:rPr>${String(t).split('\t').map((x,i)=>(i?'<w:tab/>':'')+`<w:t xml:space="preserve">${esc(x)}</w:t>`).join('')}</w:r>`;
+const para=(t,o={})=>`<w:p><w:pPr>${o.tabs?'<w:tabs>'+o.tabs.map(p=>`<w:tab w:val="left" w:pos="${p}"/>`).join('')+'</w:tabs>':''}<w:spacing w:before="${o.before||0}" w:after="${o.after==null?80:o.after}"/>${o.left!=null?`<w:ind w:left="${o.left}" w:hanging="${o.hang}"/>`:''}${o.c?'<w:jc w:val="center"/>':o.j?'<w:jc w:val="both"/>':''}</w:pPr>${run(t,o)}</w:p>`;
+function dTbl(b,total){const sm=b.w.reduce((a,c)=>a+c,0),ws=b.w.map(x=>Math.round(total*x/sm)),sz=b.sm?19:20;
+ const row=(r,hd)=>`<w:tr>${hd?'<w:trPr><w:tblHeader/></w:trPr>':''}${r.map((c,i)=>`<w:tc><w:tcPr><w:tcW w:w="${ws[i]}" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr>${para(c,{sz,b:hd,c:1,after:0})}</w:tc>`).join('')}</w:tr>`;
+ return `<w:tbl><w:tblPr><w:tblW w:w="${total}" w:type="dxa"/><w:tblBorders>${['top','left','bottom','right','insideH','insideV'].map(k=>`<w:${k} w:val="single" w:sz="4" w:space="0" w:color="000000"/>`).join('')}</w:tblBorders><w:tblLayout w:type="fixed"/><w:tblCellMar><w:left w:w="60" w:type="dxa"/><w:right w:w="60" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${ws.map(w=>`<w:gridCol w:w="${w}"/>`).join('')}</w:tblGrid>${row(b.h,1)}${b.r.map(r=>row(r,0)).join('')}</w:tbl>`+para('',{after:60});}
+function dSign(b,total){const h=Math.round(total/2),cell=a=>`<w:tc><w:tcPr><w:tcW w:w="${h}" w:type="dxa"/></w:tcPr>${a.map((x,i)=>para(x,{c:1,after:0,b:i==5,u:i==5})).join('')}</w:tc>`;
+ return `<w:tbl><w:tblPr><w:tblW w:w="${total}" w:type="dxa"/><w:tblLayout w:type="fixed"/></w:tblPr><w:tblGrid><w:gridCol w:w="${h}"/><w:gridCol w:w="${h}"/></w:tblGrid><w:tr>${cell(b.l)}${cell(b.r)}</w:tr></w:tbl>`;}
+function dBody(arr,total){return arr.map(b=>b.t=='c'?para(b.x,{c:1,b:1,sz:28,after:b.x.startsWith('UNTUK')?240:0}):b.t=='kv'?para(`${b.k}\t:\t${b.v}`,{tabs:[3800,4100],left:4100,hang:4100,after:40}):b.t=='li'?para(`${b.n}\t${b.x}`,b.l?{tabs:[1000],left:1000,hang:600,j:1,after:40}:{tabs:[400],left:400,hang:400,j:1,after:40}):b.t=='amt'?para(`${b.n}\t${b.k}\t${b.v}`,{tabs:[400,5600],left:400,hang:400,after:40}):b.t=='p'?para(b.x,{b:b.b,j:!b.b,before:b.b?120:0}):b.t=='tbl'?dTbl(b,total):dSign(b,total)).join('');}
+function mkDocx(){const B=blocks(),i=B.findIndex(b=>b.t=='pg'),mar='<w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/>';
+ const xml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${dBody(B.slice(0,i),9638)}<w:p><w:pPr><w:sectPr><w:pgSz w:w="11906" w:h="16838"/>${mar}</w:sectPr></w:pPr></w:p>${dBody(B.slice(i+1),14570)}<w:sectPr><w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/>${mar}</w:sectPr></w:body></w:document>`;
+ const z=new JSZip();
+ z.file('[Content_Types].xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+ z.file('_rels/.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+ z.file('word/document.xml',xml);
+ return z.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});}
+
+/* ---- PDF ---- */
+async function mkPdf(){
+ const {jsPDF}=window.jspdf,B=blocks(),M=15,LH=4.9,doc=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
+ let W=210-2*M,H=297,y=M,land=false;
+ const T=s=>String(s==null?'':s).replace(/[\u2013\u2014]/g,'-');
+ const fnt=(st,sz)=>{doc.setFont('times',st);doc.setFontSize(sz);};
+ const ens=h=>{if(y+h>H-M){doc.addPage('a4',land?'landscape':'portrait');y=M;}};
+ const jl=(ln,x,yy,w)=>{const ws=ln.split(' ');if(ws.length<2){doc.text(ln,x,yy);return;}const tw=ws.reduce((a,s)=>a+doc.getTextWidth(s),0),g=(w-tw)/(ws.length-1);let cx=x;ws.forEach(s=>{doc.text(s,cx,yy);cx+=doc.getTextWidth(s)+g;});};
+ const para=(txt,x,w,just)=>{const ls=doc.splitTextToSize(T(txt),w);ls.forEach((l,k)=>{ens(LH);just&&k<ls.length-1?jl(l,x,y+3.6,w):doc.text(l,x,y+3.6);y+=LH;});};
+ fnt('normal',11);
+ for(const b of B){
+  if(b.t=='c'){fnt('bold',14);ens(8);doc.text(T(b.x),M+W/2,y+5,{align:'center'});y+=b.x.startsWith('UNTUK')?10:6.5;fnt('normal',11);}
+  else if(b.t=='kv'){fnt('normal',11);const ls=doc.splitTextToSize(T(b.v),W-64);ens(LH*ls.length);doc.text(T(b.k),M,y+3.6);doc.text(':',M+60,y+3.6);ls.forEach(l=>{doc.text(l,M+64,y+3.6);y+=LH;});}
+  else if(b.t=='p'){if(b.b){fnt('bold',11);y+=1.5;para(b.x,M,W,false);fnt('normal',11);}else{y+=1;para(b.x,M,W,true);}}
+  else if(b.t=='li'){const ind=b.l?8:0,nx=M+ind,tx=M+ind+(b.l?10:8);doc.text(b.n,nx,y+3.6);para(b.x,tx,W-(tx-M),true);}
+  else if(b.t=='amt'){ens(LH);doc.text(T(b.n),M,y+3.6);doc.text(T(b.k),M+8,y+3.6);doc.text(T(b.v),M+98,y+3.6);y+=LH;}
+  else if(b.t=='tbl'){const sm=b.w.reduce((a,c)=>a+c,0),cs={};b.w.forEach((w,k)=>cs[k]={cellWidth:W*w/sm});
+   doc.autoTable({startY:y+1,head:[b.h.map(T)],body:b.r.map(r=>r.map(T)),theme:'grid',margin:{left:M,right:M,top:M,bottom:M},tableWidth:W,columnStyles:cs,
+    styles:{font:'times',fontSize:b.sm?10.5:10,cellPadding:1.6,halign:'center',valign:'middle',lineColor:[0,0,0],lineWidth:.2,textColor:0,overflow:'linebreak'},
+    headStyles:{fillColor:[255,255,255],textColor:0,fontStyle:'bold'}});
+   y=doc.lastAutoTable.finalY+4;fnt('normal',11);}
+  else if(b.t=='sign'){ens(LH*7+4);y+=4;[[b.l,M+W/4],[b.r,M+W*3/4]].forEach(([a,cx])=>{let yy=y;a.forEach((x,k)=>{if(k==5){fnt('bold',11);doc.text(T(x),cx,yy+3.6,{align:'center'});const tw=doc.getTextWidth(T(x));doc.line(cx-tw/2,yy+4.4,cx+tw/2,yy+4.4);fnt('normal',11);}else doc.text(T(x),cx,yy+3.6,{align:'center'});yy+=LH;});});y+=LH*7;}
+  else if(b.t=='pg'){land=true;W=297-2*M;H=210;doc.addPage('a4','landscape');y=M;}
+ }
+ return doc.output('blob');}
+
+/* ---- actions ---- */
+let DL=null;const msg=t=>$('msg').textContent=t||'';
+const fname=ext=>'KP4_'+(S.nama||'Pegawai').trim().replace(/[^\w]+/g,'_')+'.'+ext;
+function saveFile(filename,data){
+ if(DL&&typeof DL.save==='function')return DL.save({filename,data});
+ const url=URL.createObjectURL(data),a=document.createElement('a');
+ a.href=url;a.download=filename;a.hidden=true;document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function go(btn,make,ext){btn.disabled=true;msg('Menyiapkan file…');
+ try{const data=await make();await saveFile(fname(ext),data);msg('Unduhan dimulai: '+fname(ext));}
+ catch(e){msg(e&&e.code=='declined'?'Unduhan dibatalkan.':'Gagal membuat file: '+((e&&e.message)||e));}
+ finally{btn.disabled=false;}}
+$('bPrint').onclick=()=>{try{window.print();}catch(e){msg('Cetak diblokir di tampilan ini. Gunakan Unduh PDF.');}};
+$('bPdf').onclick=()=>go($('bPdf'),mkPdf,'pdf');
+$('bDoc').onclick=()=>go($('bDoc'),mkDocx,'docx');
+renderForm();renderPreview();
+(async()=>{try{DL=window.claude?await claude.use('downloads'):null;}catch(e){DL=null;}
+ $('bPdf').disabled=false;$('bDoc').disabled=false;
+ if(!DL)msg('Unduh PDF / Word menggunakan unduhan browser.');})();
+</script>
+</body>
+</html>

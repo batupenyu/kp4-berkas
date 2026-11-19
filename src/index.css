@@ -1,0 +1,190 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-display: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    color-scheme: light;
+  }
+
+  :root.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+  }
+}
+
+.font-mono-tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Official KP4 Paper Document Styling */
+#paperWrap {
+  background: #ffffff;
+  color: #000000;
+  padding: 28px 36px;
+  width: max-content;
+  min-width: 100%;
+  box-shadow: 0 2px 14px rgba(15, 23, 42, 0.14);
+  border-radius: 4px;
+}
+
+#paper {
+  width: 680px;
+  margin: 0 auto;
+  font: 14px/1.35 "Times New Roman", Times, serif;
+  color: #000000;
+}
+
+#paper p {
+  margin: 0 0 5px;
+}
+
+#paper .c {
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0;
+}
+
+#paper .c + .c {
+  margin-bottom: 12px;
+}
+
+#paper .b {
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+#paper .jp {
+  text-align: justify;
+}
+
+#paper .li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  text-align: justify;
+  margin: 0 0 3px;
+}
+
+#paper .li.l1 {
+  padding-left: 28px;
+  grid-template-columns: 40px 1fr;
+}
+
+#paper .amt {
+  display: grid;
+  grid-template-columns: 28px 330px 1fr;
+  margin: 0 0 3px;
+}
+
+#paper .kv {
+  display: grid;
+  grid-template-columns: 230px 16px 1fr;
+}
+
+#paper table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin: 6px 0 10px;
+  font-size: 11.5px;
+}
+
+#paper table.sm {
+  font-size: 9.5px;
+}
+
+#paper th,
+#paper td {
+  border: 1px solid #000000;
+  padding: 3px 4px;
+  text-align: center;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+#paper .sign {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 14px;
+  text-align: center;
+}
+
+#paper .sign b {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+#paper .pg2 {
+  border-top: 2px dashed #94a3b8;
+  margin-top: 30px;
+  padding-top: 24px;
+}
+
+@media print {
+  .noprint {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  #paperWrap {
+    padding: 0 !important;
+    box-shadow: none !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+  #paper {
+    width: 100% !important;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+  @page portrait {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+  @page landscape {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+  #paper .pg {
+    page: portrait;
+  }
+  #paper .pg2 {
+    page: landscape;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    break-before: page;
+    page-break-before: always;
+  }
+  #paper table {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+  #paper tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  #paper thead {
+    display: table-header-group;
+  }
+  #paper tbody {
+    display: table-row-group;
+  }
+}
